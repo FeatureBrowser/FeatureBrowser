@@ -1,0 +1,8 @@
+{
+  "require": {
+    "behat/behat": "3.0.*@dev"
+  },
+  "autoload": {
+    "psr-4": {"FeatureBrowser\\": "src/"}
+  }
+}
