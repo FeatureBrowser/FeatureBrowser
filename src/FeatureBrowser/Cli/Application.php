@@ -17,5 +17,18 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 final class Application extends BaseApplication
 {
+    /**
+     * Gets the default commands that should always be available.
+     *
+     * @return array An array of default Command instances
+     */
+    protected function getDefaultCommands()
+    {
+        // Keep the core default commands to have the HelpCommand
+        // which is used when using the --help option
+        $defaultCommands   = parent::getDefaultCommands();
+        $defaultCommands[] = new GenerateCommand();
+        return $defaultCommands;
+    }
 
 }
