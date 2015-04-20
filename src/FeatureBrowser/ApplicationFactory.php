@@ -18,7 +18,7 @@ final class ApplicationFactory
      */
     protected function getName()
     {
-        return 'featurebrowser';
+        return 'Feature Browser';
     }
 
     /**
