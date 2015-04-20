@@ -14,5 +14,7 @@ final class GenerateCommand extends BaseCommand
              ->setDescription('Generates Feature Browser Documentation');
     }
 
-
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+    }
 }
