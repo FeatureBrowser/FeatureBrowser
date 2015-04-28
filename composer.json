@@ -1,4 +1,6 @@
 {
+  "name": "Feature Browser",
+  "description": "Feature Browser takes your Behat .feature files and turns them alchemy-like into an interactive user manual."
   "require": {
     "behat/behat": "3.0.*@dev",
     "twig/twig": "~1.0"
