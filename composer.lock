@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2f748258f0535f68f7f7b5c9339bb80e",
+    "hash": "2fd1184f5bed7e1f97e1a0e15a70845f",
     "packages": [
         {
             "name": "behat/behat",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/Behat.git",
-                "reference": "a0198655b1a3dd169e4f5f9440822d6ec6dcd015"
+                "reference": "d4c821ca70c600ddeb75fcd365e3bd30eaba7194"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/a0198655b1a3dd169e4f5f9440822d6ec6dcd015",
-                "reference": "a0198655b1a3dd169e4f5f9440822d6ec6dcd015",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/d4c821ca70c600ddeb75fcd365e3bd30eaba7194",
+                "reference": "d4c821ca70c600ddeb75fcd365e3bd30eaba7194",
                 "shasum": ""
             },
             "require": {
@@ -85,7 +85,7 @@
                 "symfony",
                 "testing"
             ],
-            "time": "2015-03-20 10:31:41"
+            "time": "2015-04-21 14:59:58"
         },
         {
             "name": "behat/gherkin",
