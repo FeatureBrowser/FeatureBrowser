@@ -1,6 +1,7 @@
 {
   "require": {
-    "behat/behat": "3.0.*@dev"
+    "behat/behat": "3.0.*@dev",
+    "twig/twig": "~1.0"
   },
   "autoload": {
     "psr-4": {"FeatureBrowser\\": "src/"}

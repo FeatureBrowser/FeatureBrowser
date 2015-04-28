@@ -24,6 +24,13 @@ final class GenerateCommand extends BaseCommand
         {
             mkdir($outputDir);
         }
+        $outputDir .= (substr($outputDir, -1) == '/' ? '' : '/');
 
+        $loader = new Twig_Loader_Array();
+        $twig   = new Twig_Environment($loader);
+
+//        $rendered = $this->render('src/FeatureBrowser/Resources/views/base.html.twig');
+//        $fp       = fopen($outputDir . 'index.html', 'w');
+//        fwrite($fp, $rendered);
     }
 }
