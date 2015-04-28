@@ -28,11 +28,12 @@ final class GenerateCommand extends BaseCommand
         }
         $outputDir .= (substr($outputDir, -1) == '/' ? '' : '/');
 
-        $loader = new Twig_Loader_Filesystem('/src/FeatureBrowser/Resources/views', ['cache' => '/cache',]);
-        $twig   = new Twig_Environment($loader);
+        $viewsDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'views';
+        $loader         = new Twig_Loader_Filesystem($viewsDirectory, ['cache' => '/cache',]);
+        $twig           = new Twig_Environment($loader);
 
-//        $rendered = $this->render('src/FeatureBrowser/Resources/views/base.html.twig');
-//        $fp       = fopen($outputDir . 'index.html', 'w');
-//        fwrite($fp, $rendered);
+        $rendered = $twig->render('base.html.twig');
+        $fp       = fopen($outputDir . 'index.html', 'w');
+        fwrite($fp, $rendered);
     }
 }
