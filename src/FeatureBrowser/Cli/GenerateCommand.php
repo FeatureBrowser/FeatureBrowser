@@ -3,10 +3,11 @@
 namespace FeatureBrowser\FeatureBrowser\Cli;
 
 use Symfony\Component\Console\Command\Command as BaseCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Twig_Loader_Filesystem;
+use Twig_Environment;
+
 
 final class GenerateCommand extends BaseCommand
 {
@@ -26,7 +27,7 @@ final class GenerateCommand extends BaseCommand
         }
         $outputDir .= (substr($outputDir, -1) == '/' ? '' : '/');
 
-        $loader = new Twig_Loader_Array();
+        $loader = new Twig_Loader_Filesystem('/src/FeatureBrowser/Resources/views', ['cache' => '/cache',]);
         $twig   = new Twig_Environment($loader);
 
 //        $rendered = $this->render('src/FeatureBrowser/Resources/views/base.html.twig');
