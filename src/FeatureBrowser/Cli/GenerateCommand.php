@@ -33,7 +33,7 @@ final class GenerateCommand extends BaseCommand
         $twig           = new Twig_Environment($loader);
 
         $rendered = $twig->render('base.html.twig');
-        $fp       = fopen($outputDir . 'index.html', 'w');
-        fwrite($fp, $rendered);
+        $filePointer       = fopen($outputDir . 'index.html', 'w');
+        fwrite($filePointer, $rendered);
     }
 }
