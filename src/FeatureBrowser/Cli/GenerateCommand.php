@@ -32,8 +32,8 @@ final class GenerateCommand extends BaseCommand
         $loader         = new Twig_Loader_Filesystem($viewsDirectory, ['cache' => '/cache',]);
         $twig           = new Twig_Environment($loader);
 
-        $rendered = $twig->render('base.html.twig');
-        $filePointer       = fopen($outputDir . 'index.html', 'w');
+        $rendered    = $twig->render('base.html.twig');
+        $filePointer = fopen($outputDir . 'index.html', 'w');
         fwrite($filePointer, $rendered);
     }
 }
