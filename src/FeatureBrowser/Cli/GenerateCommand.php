@@ -23,8 +23,9 @@ final class GenerateCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         //Read the config file to get default parameters
-        $file    = 'featurebrowser.yml.dist';
-        $configs = Yaml::parse($file);
+        $file        = 'featurebrowser.yml.dist';
+        $configs     = Yaml::parse($file);
+        $projectName = $configs['featurebrowser']['project-name'];
 
         $outputDir = $input->getOption('output-dir');
         if(null === $outputDir)
@@ -42,8 +43,9 @@ final class GenerateCommand extends BaseCommand
         $loader         = new Twig_Loader_Filesystem($viewsDirectory, ['cache' => '/cache',]);
         $twig           = new Twig_Environment($loader);
 
-        $rendered    = $twig->render('base.html.twig');
-        $filePointer = fopen($outputDir . 'index.html', 'w');
+        $templateVariables = ['projectName' => $projectName];
+        $rendered          = $twig->render('base.html.twig', $templateVariables);
+        $filePointer       = fopen($outputDir . 'index.html', 'w');
         fwrite($filePointer, $rendered);
     }
 }
