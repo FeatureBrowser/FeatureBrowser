@@ -19,6 +19,11 @@
 
 <body role="document">
 
+<ul>
+    {% for featureNode in features %}
+        <li>{{ featureNode.getTitle() }}</li>
+    {% endfor %}
+</ul>
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
