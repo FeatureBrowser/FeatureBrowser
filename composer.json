@@ -4,7 +4,8 @@
   "license": "MIT",
   "require": {
     "behat/behat": "3.0.*@dev",
-    "twig/twig": "~1.0"
+    "twig/twig": "~1.0",
+    "symfony/finder": "~2.6"
   },
   "autoload": {
     "psr-4": {"FeatureBrowser\\": "src/"}
