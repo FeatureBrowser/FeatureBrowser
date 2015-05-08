@@ -1,3 +1,4 @@
 featurebrowser:
   project-name: 'My Project'
-  output-dir: 'docs'
+  output-directory: 'docs'
+  features-directory: 'features'
