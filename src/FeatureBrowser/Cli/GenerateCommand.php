@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command as BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Yaml\Yaml;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
@@ -21,7 +22,16 @@ final class GenerateCommand extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        //Read the config file to get default parameters
+        $file    = 'featurebrowser.yml.dist';
+        $configs = Yaml::parse($file);
+
         $outputDir = $input->getOption('output-dir');
+        if(null === $outputDir)
+        {
+            $outputDir = $configs['featurebrowser']['output-dir'];
+        }
+
         if(!is_dir($outputDir))
         {
             mkdir($outputDir);
