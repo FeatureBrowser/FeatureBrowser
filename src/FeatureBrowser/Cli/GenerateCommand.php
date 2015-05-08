@@ -11,7 +11,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
-use Behat\Gherkin\Node\FeatureNode;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
