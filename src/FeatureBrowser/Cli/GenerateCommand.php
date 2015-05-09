@@ -4,6 +4,7 @@ namespace FeatureBrowser\FeatureBrowser\Cli;
 
 use Behat\Gherkin\Keywords\ArrayKeywords;
 use Behat\Gherkin\Lexer;
+use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Parser;
 use Symfony\Component\Console\Command\Command as BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -76,14 +77,23 @@ final class GenerateCommand extends BaseCommand
         $lexer  = new Lexer($keywords);
         $parser = new Parser($lexer);
 
-        $featuresArray = [];
+        $features = [];
+        $tags     = [];
 
         $finder = new Finder();
         $finder->files()->in($this->featuresDirectory)->name('*.feature');
         foreach($finder as $featureFile)
         {
-            $featuresArray[] = $parser->parse($featureFile->getContents(), $featureFile->getRealPath());
+            $featureFromFile = $parser->parse($featureFile->getContents(), $featureFile->getRealPath());
+            if($featureFromFile instanceof FeatureNode)
+            {
+                $features[] = $featureFromFile;
+                $tags       = array_merge($tags, $featureFromFile->getTags());
+            }
         }
+
+        $tags = array_count_values($tags);
+        arsort($tags);
 
         $viewsDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'views';
         $loader         = new Twig_Loader_Filesystem($viewsDirectory, ['cache' => '/cache',]);
@@ -91,7 +101,8 @@ final class GenerateCommand extends BaseCommand
 
         $templateVariables = [
             'projectName' => $this->projectName,
-            'features'    => $featuresArray
+            'features'    => $features,
+            'tags'        => $tags
         ];
         $rendered          = $twig->render('base.html.twig', $templateVariables);
         $filePointer       = fopen($this->outputDirectory . 'index.html', 'w');
