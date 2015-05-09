@@ -89,6 +89,11 @@ final class GenerateCommand extends BaseCommand
             {
                 $features[] = $featureFromFile;
                 $tags       = array_merge($tags, $featureFromFile->getTags());
+                $scenarios  = $featureFromFile->getScenarios();
+                foreach($scenarios AS $scenario)
+                {
+                    $tags = array_merge($tags, $scenario->getTags());
+                }
             }
         }
 
