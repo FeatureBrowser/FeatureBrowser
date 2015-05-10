@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
@@ -114,38 +115,74 @@ final class GenerateCommand extends BaseCommand
             $featureFromFile = $parser->parse($featureFile->getContents(), $featureFile->getRealPath());
             if($featureFromFile instanceof FeatureNode)
             {
-                $directory           = $featureFile->getPath();
-                $directory           = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $directory);
-                $this->directories[] = $directory;
-
-                $pathname = $featureFile->getPathname();
-                $pathname = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $pathname);
-                if(DIRECTORY_SEPARATOR != '/')
-                {
-                    $pathname = str_replace(DIRECTORY_SEPARATOR, '/', $pathname);
-                }
-                $pathname = str_replace('.feature', '.html', $pathname);
-
+                $pathname = $this->extractPathname($featureFile);
+                $this->extractDirectory($featureFile);
                 $this->features[$pathname] = $featureFromFile;
-                $this->tags                = array_merge($this->tags, $featureFromFile->getTags());
-                $scenarios                 = $featureFromFile->getScenarios();
-                foreach($scenarios AS $scenario)
-                {
-                    $this->tags = array_merge($this->tags, $scenario->getTags());
-                }
+
+                $scenarios = $featureFromFile->getScenarios();
+                $this->extractTags($featureFromFile, $scenarios);
             }
         }
 
-        $this->tags = array_count_values($this->tags);
-        arsort($this->tags);
-
-        $this->directories = array_unique($this->directories);
-        sort($this->directories);
+        $this->sortDirectories();
+        $this->sortTags();
 
         $this->renderViews();
     }
 
-    protected function renderViews()
+    protected function sortTags()
+    {
+        $this->tags = array_count_values($this->tags);
+        arsort($this->tags);
+    }
+
+    protected function sortDirectories()
+    {
+        $this->directories = array_unique($this->directories);
+        sort($this->directories);
+    }
+
+    protected
+    function extractTags(FeatureNode $featureFromFile, $scenarios)
+    {
+        $this->tags = array_merge($this->tags, $featureFromFile->getTags());
+        foreach($scenarios AS $scenario)
+        {
+            $this->tags = array_merge($this->tags, $scenario->getTags());
+        }
+    }
+
+    /**
+     * @param SplFileInfo $featureFile
+     */
+    protected
+    function extractDirectory(SplFileInfo $featureFile)
+    {
+        $directory           = $featureFile->getPath();
+        $directory           = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $directory);
+        $this->directories[] = $directory;
+    }
+
+    /**
+     * @param SplFileInfo $featureFile
+     *
+     * @return mixed|string
+     */
+    protected
+    function extractPathname(SplFileInfo $featureFile)
+    {
+        $pathname = $featureFile->getPathname();
+        $pathname = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $pathname);
+        if(DIRECTORY_SEPARATOR != '/')
+        {
+            $pathname = str_replace(DIRECTORY_SEPARATOR, '/', $pathname);
+        }
+        $pathname = str_replace('.feature', '.html', $pathname);
+        return $pathname;
+    }
+
+    protected
+    function renderViews()
     {
         $viewsDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'views';
         $loader         = new Twig_Loader_Filesystem($viewsDirectory, ['cache' => '/cache',]);
