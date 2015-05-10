@@ -61,8 +61,8 @@
             <div class="col-md-4">
                 <h2>Features</h2>
                 <ul>
-                    {% for featureNode in features %}
-                        <li>{{ featureNode.getTitle() }}</li>
+                    {% for pathname, featureNode in features %}
+                        <li><a href="{{ pathname }}">{{ featureNode.getTitle() }}</a></li>
                     {% endfor %}
                 </ul>
                 <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>

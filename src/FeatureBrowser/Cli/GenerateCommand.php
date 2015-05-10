@@ -82,14 +82,23 @@ final class GenerateCommand extends BaseCommand
 
         $finder = new Finder();
         $finder->files()->in($this->featuresDirectory)->name('*.feature');
+        /** @var \Symfony\Component\Finder\SplFileInfo $featureFile */
         foreach($finder as $featureFile)
         {
             $featureFromFile = $parser->parse($featureFile->getContents(), $featureFile->getRealPath());
             if($featureFromFile instanceof FeatureNode)
             {
-                $features[] = $featureFromFile;
-                $tags       = array_merge($tags, $featureFromFile->getTags());
-                $scenarios  = $featureFromFile->getScenarios();
+                $pathname = $featureFile->getPathname();
+                $pathname = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $pathname);
+                if(DIRECTORY_SEPARATOR != '/')
+                {
+                    $pathname = str_replace(DIRECTORY_SEPARATOR, '/', $pathname);
+                }
+                $pathname = str_replace('.feature', '.html', $pathname);
+
+                $features[$pathname] = $featureFromFile;
+                $tags                = array_merge($tags, $featureFromFile->getTags());
+                $scenarios           = $featureFromFile->getScenarios();
                 foreach($scenarios AS $scenario)
                 {
                     $tags = array_merge($tags, $scenario->getTags());
