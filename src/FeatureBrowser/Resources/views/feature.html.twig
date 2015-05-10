@@ -2,5 +2,14 @@
 
 {% block body %}
     <h1>{{ feature.getTitle() }}</h1>
+    {% for scenario in feature.getScenarios() %}
+        <h3>{{ scenario.getTitle() }}</h3>
+        <p>
+            {% for step in feature.getBackground().getSteps() %}
+                {{ step.getKeyword() }} {{ step.getText() }}<br/>
+            {% endfor %}
+        </p>
+        <hr/>
+    {% endfor %}
 
 {% endblock %}
