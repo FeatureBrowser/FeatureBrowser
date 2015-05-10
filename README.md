@@ -9,6 +9,7 @@ Configuring the FeatureBrowser can be done via a .yml file
 ```
 featurebrowser:
   project-name: 'My Project'
+  base-url: 'myproject.com'
   output-directory: 'docs'
   features-directory: 'features'
 ```
