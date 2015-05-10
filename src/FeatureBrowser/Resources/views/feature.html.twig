@@ -1,12 +1,27 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
+    <p>
+        {% for tag in feature.getTags() %}
+            <a href="">@{{ tag }}</a>
+        {% endfor %}
+    </p>
     <h1>{{ feature.getTitle() }}</h1>
+    <p>{{ feature.getDescription()|nl2br }}</p>
     {% for scenario in feature.getScenarios() %}
+        <p>
+            {% for tag in scenario.getTags() %}
+                <a href="">@{{ tag }}</a>
+            {% endfor %}
+        </p>
         <h3>{{ scenario.getTitle() }}</h3>
         <p>
             {% for step in feature.getBackground().getSteps() %}
                 {{ step.getKeyword() }} {{ step.getText() }}<br/>
+            {% endfor %}
+            {% for step in scenario.getSteps() %}
+                {{ step.getKeyword() }} {{ step.getText() }}<br/>
+
             {% endfor %}
         </p>
         <hr/>

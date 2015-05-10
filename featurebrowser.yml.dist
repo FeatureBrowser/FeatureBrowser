@@ -1,4 +1,5 @@
 featurebrowser:
   project-name: 'My Project'
+  base-url: 'localhost/featurebrowser'
   output-directory: 'docs'
   features-directory: 'features'

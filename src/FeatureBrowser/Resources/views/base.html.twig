@@ -39,7 +39,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">{{ block("title") }}</a>
+                <a class="navbar-brand" href="http://{{ baseUrl }}/{{ baseDirectory }}">{{ block("title") }}</a>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
@@ -60,7 +60,7 @@
                 <div class="col-md-6">
                     <h2>Directories</h2>
                     <ul>
-                        {% for directory in directories %}
+                        {% for directory, files in directories %}
                             <li><a href="directories/{{ directory }}">{{ directory }}</a></li>
                         {% endfor %}
                     </ul>
