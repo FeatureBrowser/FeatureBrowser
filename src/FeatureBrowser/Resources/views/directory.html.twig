@@ -1,0 +1,10 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>{{ directory }}</h1>
+    <ul>
+        {% for filename, feature in features %}
+            <li><a href="{{ filename }}">{{ feature.getTitle() }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

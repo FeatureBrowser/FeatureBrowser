@@ -15,6 +15,8 @@ use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
+use RecursiveIteratorIterator;
+use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 
 
 final class GenerateCommand extends BaseCommand
@@ -112,21 +114,22 @@ final class GenerateCommand extends BaseCommand
         /** @var \Symfony\Component\Finder\SplFileInfo $featureFile */
         foreach($finder as $featureFile)
         {
-            $featureFromFile = $parser->parse($featureFile->getContents(), $featureFile->getRealPath());
-            if($featureFromFile instanceof FeatureNode)
+            $featureNode = $parser->parse($featureFile->getContents(), $featureFile->getRealPath());
+            if($featureNode instanceof FeatureNode)
             {
                 $pathname = $this->extractPathname($featureFile);
-                $this->extractDirectory($featureFile);
-                $this->features[$pathname] = $featureFromFile;
+                $this->extractDirectory($featureFile, $featureNode);
+                $this->features[$pathname] = $featureNode;
 
-                $scenarios = $featureFromFile->getScenarios();
-                $this->extractTags($featureFromFile, $scenarios);
+                $scenarios = $featureNode->getScenarios();
+                $this->extractTags($featureNode, $scenarios);
             }
         }
 
         $this->sortDirectories();
         $this->sortTags();
 
+        $this->emptyOutputDirectory();
         $this->renderViews();
     }
 
@@ -138,14 +141,12 @@ final class GenerateCommand extends BaseCommand
 
     protected function sortDirectories()
     {
-        $this->directories = array_unique($this->directories);
-        sort($this->directories);
+        ksort($this->directories);
     }
 
-    protected
-    function extractTags(FeatureNode $featureFromFile, $scenarios)
+    protected function extractTags(FeatureNode $featureNode, $scenarios)
     {
-        $this->tags = array_merge($this->tags, $featureFromFile->getTags());
+        $this->tags = array_merge($this->tags, $featureNode->getTags());
         foreach($scenarios AS $scenario)
         {
             $this->tags = array_merge($this->tags, $scenario->getTags());
@@ -155,11 +156,15 @@ final class GenerateCommand extends BaseCommand
     /**
      * @param SplFileInfo $featureFile
      */
-    protected function extractDirectory(SplFileInfo $featureFile)
+    protected function extractDirectory(SplFileInfo $featureFile, FeatureNode $featureNode)
     {
-        $directory           = $featureFile->getPath();
-        $directory           = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $directory);
-        $this->directories[] = $directory;
+        $filename  = $this->extractFilename($featureNode);
+        $filename  = str_replace('.feature', '.html', $filename);
+        $directory = $featureFile->getPath();
+        $directory = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $directory);
+        $directory = str_replace(DIRECTORY_SEPARATOR, '/', $directory);
+
+        $this->directories[$directory][$filename] = $featureNode;
     }
 
     /**
@@ -179,20 +184,75 @@ final class GenerateCommand extends BaseCommand
         return $pathname;
     }
 
+    /**
+     * @param FeatureNode $featureNode
+     *
+     * @return mixed
+     */
+    protected function extractFilename(FeatureNode $featureNode)
+    {
+        $directory = $featureNode->getFile();
+        $parts     = explode(DIRECTORY_SEPARATOR, $directory);
+        return array_pop($parts);
+    }
+
+    protected function emptyOutputDirectory()
+    {
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($this->outputDirectory, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach($files as $fileinfo)
+        {
+            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+            $todo($fileinfo->getRealPath());
+        }
+    }
+
     protected function renderViews()
     {
         $viewsDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'views';
         $loader         = new Twig_Loader_Filesystem($viewsDirectory, ['cache' => '/cache',]);
         $twig           = new Twig_Environment($loader);
 
+        $globalTemplateVariables = ['projectName' => $this->projectName];
+
         $templateVariables = [
-            'projectName' => $this->projectName,
             'features'    => $this->features,
             'tags'        => $this->tags,
             'directories' => $this->directories
         ];
-        $rendered          = $twig->render('base.html.twig', $templateVariables);
-        $filePointer       = fopen($this->outputDirectory . 'index.html', 'w');
+
+        $rendered    = $twig->render('base.html.twig', array_merge($globalTemplateVariables, $templateVariables));
+        $filePointer = fopen($this->outputDirectory . 'index.html', 'w');
         fwrite($filePointer, $rendered);
+
+        $directoryVariables = $globalTemplateVariables;
+        $featureVariables   = $globalTemplateVariables;
+        foreach($this->directories AS $directory => $features)
+        {
+            $directoryVariables['directory'] = $directory;
+            $directoryVariables['features']  = $features;
+            $featureVariables['directory']   = $directory;
+
+            $rendered = $twig->render('directory.html.twig', $directoryVariables);
+            $path     = $this->outputDirectory . 'directories' . DIRECTORY_SEPARATOR . $directory;
+            if(!is_dir($path))
+            {
+                mkdir($path, null, true);
+            }
+            $filePointer = fopen($path . DIRECTORY_SEPARATOR . 'index.html', 'w');
+            fwrite($filePointer, $rendered);
+
+            foreach($features AS $filename => $featureNode)
+            {
+                $featureVariables['feature'] = $featureNode;
+
+                $rendered    = $twig->render('feature.html.twig', $featureVariables);
+                $filePointer = fopen($path . DIRECTORY_SEPARATOR . $filename, 'w');
+                fwrite($filePointer, $rendered);
+            }
+        }
     }
 }

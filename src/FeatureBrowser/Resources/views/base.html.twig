@@ -54,42 +54,27 @@
 {% endblock %}
 
 <div class="container">
-
     <div class="starter-template">
-        <!-- Example row of columns -->
-        <div class="row">
-            <div class="col-md-4">
-                <h2>Directories</h2>
-                <ul>
-                    {% for directory in directories %}
-                        <li><a href="">{{ directory }}</a></li>
-                    {% endfor %}
-                </ul>
-                <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        {% block body %}
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Directories</h2>
+                    <ul>
+                        {% for directory in directories %}
+                            <li><a href="directories/{{ directory }}">{{ directory }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h2>Tags</h2>
+                    <ul>
+                        {% for tag, count in tags %}
+                            <li><a href="tags/{{ tag }}.html">@{{ tag }} ({{ count }})</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-            <div class="col-md-4">
-                <h2>Tags</h2>
-                <ul>
-                    {% for tag, count in tags %}
-                        <li><a href="">@{{ tag }} ({{ count }})</a></li>
-                    {% endfor %}
-                </ul>
-                <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4">
-                <h2>Features</h2>
-                <ul>
-                    {% for pathname, featureNode in features %}
-                        <li><a href="{{ pathname }}">{{ featureNode.getTitle() }}</a></li>
-                    {% endfor %}
-                </ul>
-                <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-            </div>
-
-        </div>
-
-        <hr>
-
+        {% endblock %}
     </div>
 
 </div>
