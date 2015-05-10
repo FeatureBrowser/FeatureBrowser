@@ -77,8 +77,9 @@ final class GenerateCommand extends BaseCommand
         $lexer  = new Lexer($keywords);
         $parser = new Parser($lexer);
 
-        $features = [];
-        $tags     = [];
+        $features    = [];
+        $tags        = [];
+        $directories = [];
 
         $finder = new Finder();
         $finder->files()->in($this->featuresDirectory)->name('*.feature');
@@ -88,6 +89,10 @@ final class GenerateCommand extends BaseCommand
             $featureFromFile = $parser->parse($featureFile->getContents(), $featureFile->getRealPath());
             if($featureFromFile instanceof FeatureNode)
             {
+                $directory     = $featureFile->getPath();
+                $directory     = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $directory);
+                $directories[] = $directory;
+
                 $pathname = $featureFile->getPathname();
                 $pathname = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $pathname);
                 if(DIRECTORY_SEPARATOR != '/')
@@ -109,6 +114,9 @@ final class GenerateCommand extends BaseCommand
         $tags = array_count_values($tags);
         arsort($tags);
 
+        $directories = array_unique($directories);
+        sort($directories);
+
         $viewsDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'views';
         $loader         = new Twig_Loader_Filesystem($viewsDirectory, ['cache' => '/cache',]);
         $twig           = new Twig_Environment($loader);
@@ -116,7 +124,8 @@ final class GenerateCommand extends BaseCommand
         $templateVariables = [
             'projectName' => $this->projectName,
             'features'    => $features,
-            'tags'        => $tags
+            'tags'        => $tags,
+            'directories' => $directories
         ];
         $rendered          = $twig->render('base.html.twig', $templateVariables);
         $filePointer       = fopen($this->outputDirectory . 'index.html', 'w');
