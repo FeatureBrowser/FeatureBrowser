@@ -23,6 +23,9 @@ final class GenerateCommand extends BaseCommand
     protected $outputDirectory;
     protected $featuresDirectory;
 
+    /**
+     * @inheritdoc
+     */
     protected function configure()
     {
         $this->setName('generate')
@@ -30,6 +33,9 @@ final class GenerateCommand extends BaseCommand
              ->addOption('output-dir', 'o', InputOption::VALUE_REQUIRED, 'Where do you want the generated documentation to be stored?');
     }
 
+    /**
+     * @param InputInterface $input
+     */
     protected function loadConfig(InputInterface $input)
     {
         //Read the config file to get default parameters
@@ -51,11 +57,12 @@ final class GenerateCommand extends BaseCommand
         $this->outputDirectory = $outputDir;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * @return ArrayKeywords
+     */
+    protected function getKeywords()
     {
-        $this->loadConfig($input);
-
-        $keywords = new ArrayKeywords(
+        return new ArrayKeywords(
             [
                 'en' => [
                     'name'             => 'English',
@@ -73,9 +80,28 @@ final class GenerateCommand extends BaseCommand
                 ]
             ]
         );
+    }
 
-        $lexer  = new Lexer($keywords);
-        $parser = new Parser($lexer);
+    /**
+     * @return Parser
+     */
+    protected function loadParser()
+    {
+        $keywords = $this->getKeywords();
+
+        $lexer = new Lexer($keywords);
+        return new Parser($lexer);
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->loadConfig($input);
+
+        $parser = $this->loadParser();
 
         $features    = [];
         $tags        = [];
