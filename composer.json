@@ -3,10 +3,12 @@
   "description": "Feature Browser takes your Behat .feature files and turns them alchemy-like into an interactive user manual.",
   "license": "MIT",
   "require": {
-    "behat/behat": "3.0.*@dev",
-    "twig/twig": "~1.0",
+    "behat/behat": "3.*",
+    "twig/twig": ">=1.5",
     "symfony/finder": "~2.6"
   },
+  "preferred-install": "dist",
+  "minimum-stability": "stable",
   "autoload": {
     "psr-4": {"FeatureBrowser\\": "src/"}
   }

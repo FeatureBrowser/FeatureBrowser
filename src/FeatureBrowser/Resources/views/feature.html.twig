@@ -21,7 +21,11 @@
             {% endfor %}
             {% for step in scenario.getSteps() %}
                 {{ step.getKeyword() }} {{ step.getText() }}<br/>
-
+                {% if step.hasArguments() %}
+                    {% for argument in step.getArguments() %}
+                        {{ argument }}
+                    {% endfor %}
+                {% endif %}
             {% endfor %}
         </p>
         <hr/>
