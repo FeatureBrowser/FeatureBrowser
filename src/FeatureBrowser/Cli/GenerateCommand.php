@@ -15,6 +15,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
+use Twig_Extension_Debug;
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 
@@ -227,7 +228,8 @@ final class GenerateCommand extends BaseCommand
     {
         $viewsDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'views';
         $loader         = new Twig_Loader_Filesystem($viewsDirectory, ['cache' => '/cache',]);
-        $this->twig     = new Twig_Environment($loader);
+        $this->twig     = new Twig_Environment($loader, ['debug' => true]);
+        $this->twig->addExtension(new Twig_Extension_Debug());
 
         $globalTemplateVariables = [
             'projectName'   => $this->projectName,
