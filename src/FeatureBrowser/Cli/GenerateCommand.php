@@ -141,6 +141,8 @@ final class GenerateCommand extends BaseCommand
 
         $this->directories = array_unique($this->directories);
         sort($this->directories);
+
+        $this->renderViews();
     }
 
     protected function renderViews()
