@@ -18,10 +18,13 @@ use Twig_Environment;
 
 final class GenerateCommand extends BaseCommand
 {
-    protected $configFile = 'featurebrowser.yml.dist';
+    protected $configFile  = 'featurebrowser.yml.dist';
     protected $projectName;
     protected $outputDirectory;
     protected $featuresDirectory;
+    protected $features    = [];
+    protected $tags        = [];
+    protected $directories = [];
 
     /**
      * @inheritdoc
@@ -103,10 +106,6 @@ final class GenerateCommand extends BaseCommand
 
         $parser = $this->loadParser();
 
-        $features    = [];
-        $tags        = [];
-        $directories = [];
-
         $finder = new Finder();
         $finder->files()->in($this->featuresDirectory)->name('*.feature');
         /** @var \Symfony\Component\Finder\SplFileInfo $featureFile */
@@ -115,9 +114,9 @@ final class GenerateCommand extends BaseCommand
             $featureFromFile = $parser->parse($featureFile->getContents(), $featureFile->getRealPath());
             if($featureFromFile instanceof FeatureNode)
             {
-                $directory     = $featureFile->getPath();
-                $directory     = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $directory);
-                $directories[] = $directory;
+                $directory           = $featureFile->getPath();
+                $directory           = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $directory);
+                $this->directories[] = $directory;
 
                 $pathname = $featureFile->getPathname();
                 $pathname = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $pathname);
@@ -127,31 +126,34 @@ final class GenerateCommand extends BaseCommand
                 }
                 $pathname = str_replace('.feature', '.html', $pathname);
 
-                $features[$pathname] = $featureFromFile;
-                $tags                = array_merge($tags, $featureFromFile->getTags());
-                $scenarios           = $featureFromFile->getScenarios();
+                $this->features[$pathname] = $featureFromFile;
+                $this->tags                = array_merge($this->tags, $featureFromFile->getTags());
+                $scenarios                 = $featureFromFile->getScenarios();
                 foreach($scenarios AS $scenario)
                 {
-                    $tags = array_merge($tags, $scenario->getTags());
+                    $this->tags = array_merge($this->tags, $scenario->getTags());
                 }
             }
         }
 
-        $tags = array_count_values($tags);
-        arsort($tags);
+        $this->tags = array_count_values($this->tags);
+        arsort($this->tags);
 
-        $directories = array_unique($directories);
-        sort($directories);
+        $this->directories = array_unique($this->directories);
+        sort($this->directories);
+    }
 
+    protected function renderViews()
+    {
         $viewsDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'views';
         $loader         = new Twig_Loader_Filesystem($viewsDirectory, ['cache' => '/cache',]);
         $twig           = new Twig_Environment($loader);
 
         $templateVariables = [
             'projectName' => $this->projectName,
-            'features'    => $features,
-            'tags'        => $tags,
-            'directories' => $directories
+            'features'    => $this->features,
+            'tags'        => $this->tags,
+            'directories' => $this->directories
         ];
         $rendered          = $twig->render('base.html.twig', $templateVariables);
         $filePointer       = fopen($this->outputDirectory . 'index.html', 'w');
