@@ -155,8 +155,7 @@ final class GenerateCommand extends BaseCommand
     /**
      * @param SplFileInfo $featureFile
      */
-    protected
-    function extractDirectory(SplFileInfo $featureFile)
+    protected function extractDirectory(SplFileInfo $featureFile)
     {
         $directory           = $featureFile->getPath();
         $directory           = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $directory);
@@ -168,8 +167,7 @@ final class GenerateCommand extends BaseCommand
      *
      * @return mixed|string
      */
-    protected
-    function extractPathname(SplFileInfo $featureFile)
+    protected function extractPathname(SplFileInfo $featureFile)
     {
         $pathname = $featureFile->getPathname();
         $pathname = str_replace($this->featuresDirectory . DIRECTORY_SEPARATOR, '', $pathname);
@@ -181,8 +179,7 @@ final class GenerateCommand extends BaseCommand
         return $pathname;
     }
 
-    protected
-    function renderViews()
+    protected function renderViews()
     {
         $viewsDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'views';
         $loader         = new Twig_Loader_Filesystem($viewsDirectory, ['cache' => '/cache',]);
