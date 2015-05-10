@@ -133,6 +133,7 @@ final class GenerateCommand extends BaseCommand
         $this->renderViews();
     }
 
+
     protected function sortTags()
     {
         $this->tags = array_count_values($this->tags);
@@ -144,6 +145,10 @@ final class GenerateCommand extends BaseCommand
         ksort($this->directories);
     }
 
+    /**
+     * @param FeatureNode $featureNode
+     * @param             $scenarios
+     */
     protected function extractTags(FeatureNode $featureNode, $scenarios)
     {
         $this->tags = array_merge($this->tags, $featureNode->getTags());
@@ -196,6 +201,9 @@ final class GenerateCommand extends BaseCommand
         return array_pop($parts);
     }
 
+    /**
+     *
+     */
     protected function emptyOutputDirectory()
     {
         $files = new RecursiveIteratorIterator(
@@ -210,49 +218,93 @@ final class GenerateCommand extends BaseCommand
         }
     }
 
+    /**
+     * Render all the html views
+     */
     protected function renderViews()
     {
         $viewsDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'views';
         $loader         = new Twig_Loader_Filesystem($viewsDirectory, ['cache' => '/cache',]);
-        $twig           = new Twig_Environment($loader);
+        $this->twig     = new Twig_Environment($loader);
 
         $globalTemplateVariables = ['projectName' => $this->projectName];
 
-        $templateVariables = [
-            'features'    => $this->features,
-            'tags'        => $this->tags,
-            'directories' => $this->directories
-        ];
-
-        $rendered    = $twig->render('base.html.twig', array_merge($globalTemplateVariables, $templateVariables));
-        $filePointer = fopen($this->outputDirectory . 'index.html', 'w');
-        fwrite($filePointer, $rendered);
+        $this->renderBaseView($globalTemplateVariables);
 
         $directoryVariables = $globalTemplateVariables;
         $featureVariables   = $globalTemplateVariables;
         foreach($this->directories AS $directory => $features)
         {
-            $directoryVariables['directory'] = $directory;
-            $directoryVariables['features']  = $features;
-            $featureVariables['directory']   = $directory;
+            $path = $this->makePath($directory);
+            $this->renderDirectoryView($directory, $features, $path);
 
-            $rendered = $twig->render('directory.html.twig', $directoryVariables);
-            $path     = $this->outputDirectory . 'directories' . DIRECTORY_SEPARATOR . $directory;
-            if(!is_dir($path))
-            {
-                mkdir($path, null, true);
-            }
-            $filePointer = fopen($path . DIRECTORY_SEPARATOR . 'index.html', 'w');
-            fwrite($filePointer, $rendered);
-
+            $featureVariables['directory'] = $directory;
             foreach($features AS $filename => $featureNode)
             {
-                $featureVariables['feature'] = $featureNode;
-
-                $rendered    = $twig->render('feature.html.twig', $featureVariables);
-                $filePointer = fopen($path . DIRECTORY_SEPARATOR . $filename, 'w');
-                fwrite($filePointer, $rendered);
+                $this->renderFeatureView($featureNode, $path, $filename);
             }
         }
+    }
+
+    /**
+     * @param $directory
+     *
+     * @return string
+     */
+    protected function makePath($directory)
+    {
+        $path = $this->outputDirectory . 'directories' . DIRECTORY_SEPARATOR . $directory;
+        if(!is_dir($path))
+        {
+            mkdir($path, null, true);
+        }
+        return $path;
+    }
+
+    /**
+     * @param $globalTemplateVariables
+     */
+    protected function renderBaseView($globalTemplateVariables)
+    {
+        $baseTemplateVariables = [
+            'features'    => $this->features,
+            'tags'        => $this->tags,
+            'directories' => $this->directories
+        ];
+
+        $baseTemplateVariables = array_merge($globalTemplateVariables, $baseTemplateVariables);
+
+        $rendered    = $this->twig->render('base.html.twig', $baseTemplateVariables);
+        $filePointer = fopen($this->outputDirectory . 'index.html', 'w');
+
+        fwrite($filePointer, $rendered);
+    }
+
+    /**
+     * @param $featureNode
+     * @param $path
+     * @param $filename
+     */
+    protected function renderFeatureView($featureNode, $path, $filename)
+    {
+        $featureVariables['feature'] = $featureNode;
+
+        $rendered    = $this->twig->render('feature.html.twig', $featureVariables);
+        $filePointer = fopen($path . DIRECTORY_SEPARATOR . $filename, 'w');
+        fwrite($filePointer, $rendered);
+    }
+
+    /**
+     * @param $directory
+     * @param $features
+     */
+    protected function renderDirectoryView($directory, $features, $path)
+    {
+        $directoryVariables['directory'] = $directory;
+        $directoryVariables['features']  = $features;
+
+        $rendered    = $this->twig->render('directory.html.twig', $directoryVariables);
+        $filePointer = fopen($path . DIRECTORY_SEPARATOR . 'index.html', 'w');
+        fwrite($filePointer, $rendered);
     }
 }
