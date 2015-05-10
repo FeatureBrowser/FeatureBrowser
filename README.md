@@ -6,6 +6,16 @@ A tool that parses your Behat .feature files and turns them alchemy-like into an
 
 [![Code Climate](https://codeclimate.com/github/FeatureBrowser/FeatureBrowser/badges/gpa.svg)](https://codeclimate.com/github/FeatureBrowser/FeatureBrowser)
 
+## Configuration
+@todo: Update the FB to look for the config file in the application's directory and read it. Right now it's limited to using the vendor version.
+Configuring the FeatureBrowser can be done via a .yml file
+```
+featurebrowser:
+  project-name: 'My Project'
+  output-directory: 'docs'
+  features-directory: 'features'
+```
+
 ## Usage
 Run the featurebrowser generator from the command line:
 ```
