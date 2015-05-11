@@ -1,3 +1,4 @@
+{% import 'feature-macros.html.twig' as macros %}
 {% extends "base.html.twig" %}
 
 {% block body %}
@@ -15,42 +16,14 @@
             {% endfor %}
         </p>
         <h3>{{ scenario.getTitle() }}</h3>
-        <p>
-        {% for step in feature.getBackground().getSteps() %}
-            {{ step.getKeyword() }} {{ step.getText() }}<br/>
-        {% endfor %}
-        {% for step in scenario.getSteps() %}
-            {{ step.getKeyword() }} {{ step.getText() }}<br/>
-            {% if step.hasArguments() %}
-                {% for argument in step.getArguments() %}
-                    {% if argument.getNodeType() == 'Table' %}
-                        <p>
-                        <table class="table table-striped table-bordered">
-                            {% for row in argument.getRows() %}
-                            {% if loop.first %}
-                            <thead>
-                            <tr>
-                                {% for cell in row %}
-                                    <th>{{ cell }}</th>
-                                {% endfor %}
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% else %}
-                                <tr>
-                                    {% for cell in row %}
-                                        <td>{{ cell }}</td>
-                                    {% endfor %}
-                                </tr>
-                            {% endif %}
-                            {% endfor %}
-                            </tbody>
-                        </table><p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        {% endfor %}
-        </p>
+        {% if scenario.getNodeType() == 'Outline' %}
+            {% for example in scenario.getExamples() %}
+                <h4>Example #{{ loop.index }}</h4>
+                {{ macros.scenarionode(feature, example) }}
+            {% endfor %}
+        {% else %}
+            {{ macros.scenarionode(feature, scenario) }}
+        {% endif %}
         <hr/>
     {% endfor %}
 {% endblock %}

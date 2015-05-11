@@ -226,9 +226,11 @@ final class GenerateCommand extends BaseCommand
      */
     protected function renderViews()
     {
-        $viewsDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'views';
-        $loader         = new Twig_Loader_Filesystem($viewsDirectory, ['cache' => '/cache',]);
-        $this->twig     = new Twig_Environment($loader, ['debug' => true]);
+        $viewsDirectory       = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'views';
+        $macrosDirectory      = $viewsDirectory . DIRECTORY_SEPARATOR . 'macros';
+        $templatesDirectories = [$viewsDirectory, $macrosDirectory];
+        $loader               = new Twig_Loader_Filesystem($templatesDirectories, ['cache' => '/cache']);
+        $this->twig           = new Twig_Environment($loader, ['debug' => true]);
         $this->twig->addExtension(new Twig_Extension_Debug());
 
         $globalTemplateVariables = [
