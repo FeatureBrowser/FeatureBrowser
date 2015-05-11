@@ -16,7 +16,7 @@
                 {{ tagmacros.tag(tag) }}
             {% endfor %}
         </p>
-        <h3>{{ scenario.getTitle() }}</h3>
+        <h3 id="{{ scenario.getLine() }}">{{ scenario.getTitle() }}</h3>
         {% if scenario.getNodeType() == 'Outline' %}
             {% for example in scenario.getExamples() %}
                 <h4>Example #{{ loop.index }}</h4>

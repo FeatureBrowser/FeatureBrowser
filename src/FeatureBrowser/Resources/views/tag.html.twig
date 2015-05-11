@@ -23,7 +23,7 @@
                     <ul>
                         {% for scenario in scenariosInFile %}
                             <li>
-                                <a href="http://{{ baseUrl }}/{{ baseDirectory }}directories/{{ filename }}">{{ scenario.scenario.getTitle() }}</a>
+                                <a href="http://{{ baseUrl }}/{{ baseDirectory }}directories/{{ filename }}#{{ scenario.scenario.getLine() }}">{{ scenario.scenario.getTitle() }}</a>
                             </li>
                         {% endfor %}
                     </ul>
