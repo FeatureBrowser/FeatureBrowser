@@ -29,3 +29,5 @@ php bin/featurebrowser generate
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/e3c45aee-65d9-4750-9a89-5916bc801cf8/mini.png)](https://insight.sensiolabs.com/projects/e3c45aee-65d9-4750-9a89-5916bc801cf8)
 
 [![Code Climate](https://codeclimate.com/github/FeatureBrowser/FeatureBrowser/badges/gpa.svg)](https://codeclimate.com/github/FeatureBrowser/FeatureBrowser)
+
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/FeatureBrowser/FeatureBrowser/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/FeatureBrowser/FeatureBrowser/?branch=master)
