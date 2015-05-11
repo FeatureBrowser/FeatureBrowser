@@ -4,8 +4,7 @@ A tool that parses your Behat .feature files and turns them alchemy-like into an
 The Feature Browser tool generates .html files to represent your .feature files in a user-friendly format. Users can browse the generated manual by tag or directory, and view the features with all scenario outlines expanded.
 
 ## Configuration
-@todo: Update the FB to look for the config file in the application's directory and read it. Right now it's limited to using the vendor version.
-Configuring the FeatureBrowser can be done via a .yml file
+Configuring the FeatureBrowser can be done via the featurebrowser.yml file in your project root.
 ```
 featurebrowser:
   project-name: 'My Project'
