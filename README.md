@@ -3,10 +3,18 @@ A tool that parses your Behat .feature files and turns them alchemy-like into an
 
 The Feature Browser tool generates .html files to represent your .feature files in a user-friendly format. Users can browse the generated manual by tag or directory, and view the features with all scenario outlines expanded.
 
+### Contributing
+Pull requests are very welcome, please base them off develop branch. Thank you!
+
 ## Installation
 Install via composer/packagist:
 ```
 composer require "feature-browser/feature-browser": "~1.0"
+```
+
+If you plan to use the tool only in your development environment and then deploy the generated documentation, rather than generating the files in your production environment, you can simply require dev only.
+```
+composer require --dev "feature-browser/feature-browser": "~1.0"
 ```
 
 ## Configuration
