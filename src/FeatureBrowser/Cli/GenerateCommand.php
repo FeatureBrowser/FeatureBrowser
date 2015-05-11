@@ -300,7 +300,7 @@ final class GenerateCommand extends BaseCommand
         $path = $this->outputDirectory . $directory;
         if(!is_dir($path))
         {
-            mkdir($path, null, true);
+            mkdir($path, 0777, true);
         }
         return $path;
     }

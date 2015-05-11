@@ -10,5 +10,6 @@
   "minimum-stability": "stable",
   "autoload": {
     "psr-4": {"FeatureBrowser\\": "src/"}
-  }
+  },
+  "bin": ["bin/featurebrowser"]
 }
