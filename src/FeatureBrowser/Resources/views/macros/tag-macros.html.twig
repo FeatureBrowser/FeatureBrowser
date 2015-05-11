@@ -1,0 +1,7 @@
+{% macro tag(tag) %}
+    <a href="http://{{ baseUrl }}/{{ baseDirectory }}tags/{{ tag }}.html">@{{ tag }}</a>
+{% endmacro %}
+
+{% macro tagCount(tag, count) %}
+    <a href="http://{{ baseUrl }}/{{ baseDirectory }}tags/{{ tag }}.html">@{{ tag }} ({{ count }})</a>
+{% endmacro %}

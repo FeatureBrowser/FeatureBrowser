@@ -1,3 +1,4 @@
+{% import 'tag-macros.html.twig' as tagmacros %}
 <!DOCTYPE html>
 <html lang="en">
 {% block head %}
@@ -73,7 +74,7 @@
                     <h2>Tags</h2>
                     <ul>
                         {% for tag, count in tags %}
-                            <li><a href="tags/{{ tag }}.html">@{{ tag }} ({{ count }})</a></li>
+                            <li>{{ tagmacros.tagCount(tag, count) }}</li>
                         {% endfor %}
                     </ul>
                 </div>

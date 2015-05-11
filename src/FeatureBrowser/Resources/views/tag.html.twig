@@ -1,0 +1,34 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>@{{ tag }}</h1>
+    <div class="row">
+        {% if features is defined and features is not null %}
+            <div class="col-md-6">
+                <h2>Features</h2>
+                <ul>
+                    {% for filename, feature in features %}
+                        <li>
+                            <a href="http://{{ baseUrl }}/{{ baseDirectory }}directories/{{ filename }}">{{ feature.getTitle() }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        {% if scenarios is defined and scenarios is not null %}
+            <div class="col-md-6">
+                <h2>Scenarios</h2>
+                {% for filename, scenariosInFile in scenarios %}
+                    <h5>{{ scenariosInFile.0.feature.getTitle() }}</h5>
+                    <ul>
+                        {% for scenario in scenariosInFile %}
+                            <li>
+                                <a href="http://{{ baseUrl }}/{{ baseDirectory }}directories/{{ filename }}">{{ scenario.scenario.getTitle() }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

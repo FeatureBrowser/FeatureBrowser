@@ -29,6 +29,7 @@ final class GenerateCommand extends BaseCommand
     protected $featuresDirectory;
     protected $features    = [];
     protected $tags        = [];
+    protected $tagsTree    = [];
     protected $directories = [];
 
     /**
@@ -125,7 +126,7 @@ final class GenerateCommand extends BaseCommand
                 $this->features[$pathname] = $featureNode;
 
                 $scenarios = $featureNode->getScenarios();
-                $this->extractTags($featureNode, $scenarios);
+                $this->extractTags($featureNode, $scenarios, $pathname);
             }
         }
 
@@ -152,12 +153,22 @@ final class GenerateCommand extends BaseCommand
      * @param FeatureNode $featureNode
      * @param             $scenarios
      */
-    protected function extractTags(FeatureNode $featureNode, $scenarios)
+    protected function extractTags(FeatureNode $featureNode, $scenarios, $pathname)
     {
-        $this->tags = array_merge($this->tags, $featureNode->getTags());
+        $featureTags = $featureNode->getTags();
+        $this->tags  = array_merge($this->tags, $featureTags);
+        foreach($featureTags AS $tag)
+        {
+            $this->tagsTree[$tag]['features'][$pathname] = $featureNode;
+        }
         foreach($scenarios AS $scenario)
         {
-            $this->tags = array_merge($this->tags, $scenario->getTags());
+            $scenarioTags = $scenario->getTags();
+            $this->tags   = array_merge($this->tags, $scenarioTags);
+            foreach($scenarioTags AS $tag)
+            {
+                $this->tagsTree[$tag]['scenarios'][$pathname][] = ['scenario' => $scenario, 'feature' => $featureNode];
+            }
         }
     }
 
@@ -232,19 +243,17 @@ final class GenerateCommand extends BaseCommand
         $loader               = new Twig_Loader_Filesystem($templatesDirectories, ['cache' => '/cache']);
         $this->twig           = new Twig_Environment($loader, ['debug' => true]);
         $this->twig->addExtension(new Twig_Extension_Debug());
+        $this->twig->addGlobal('projectName', $this->projectName);
+        $this->twig->addGlobal('baseDirectory', $this->outputDirectory);
+        $this->twig->addGlobal('baseUrl', $this->baseUrl);
 
-        $globalTemplateVariables = [
-            'projectName'   => $this->projectName,
-            'baseDirectory' => $this->outputDirectory,
-            'baseUrl'       => $this->baseUrl
-        ];
-        $this->renderBaseView($globalTemplateVariables);
+        $this->renderBaseView();
 
-        $directoryVariables = $globalTemplateVariables;
-        $featureVariables   = $globalTemplateVariables;
+        $directoryVariables = [];
+        $featureVariables   = [];
         foreach($this->directories AS $directory => $features)
         {
-            $path = $this->makePath($directory);
+            $path = $this->makeOutputDir('directories' . DIRECTORY_SEPARATOR . $directory);
             $this->renderDirectoryView($directory, $features, $path, $directoryVariables);
 
             $featureVariables['directory'] = $directory;
@@ -253,6 +262,11 @@ final class GenerateCommand extends BaseCommand
                 $this->renderFeatureView($featureNode, $path, $filename, $featureVariables);
             }
         }
+        $path = $this->makeOutputDir('tags');
+        foreach($this->tagsTree AS $tag => $usage)
+        {
+            $this->renderTagView($tag, $usage, $path);
+        }
     }
 
     /**
@@ -260,9 +274,9 @@ final class GenerateCommand extends BaseCommand
      *
      * @return string
      */
-    protected function makePath($directory)
+    protected function makeOutputDir($directory)
     {
-        $path = $this->outputDirectory . 'directories' . DIRECTORY_SEPARATOR . $directory;
+        $path = $this->outputDirectory . $directory;
         if(!is_dir($path))
         {
             mkdir($path, null, true);
@@ -273,14 +287,13 @@ final class GenerateCommand extends BaseCommand
     /**
      * @param $globalTemplateVariables
      */
-    protected function renderBaseView($globalTemplateVariables)
+    protected function renderBaseView()
     {
         $baseTemplateVariables = [
             'features'    => $this->features,
             'tags'        => $this->tags,
             'directories' => $this->directories
         ];
-        $baseTemplateVariables = array_merge($globalTemplateVariables, $baseTemplateVariables);
 
         $rendered    = $this->twig->render('base.html.twig', $baseTemplateVariables);
         $filePointer = fopen($this->outputDirectory . 'index.html', 'w');
@@ -299,6 +312,21 @@ final class GenerateCommand extends BaseCommand
 
         $rendered    = $this->twig->render('feature.html.twig', $featureVariables);
         $filePointer = fopen($path . DIRECTORY_SEPARATOR . $filename, 'w');
+        fwrite($filePointer, $rendered);
+    }
+
+    protected function renderTagView($tag, $usage, $path)
+    {
+        $filename = $path . DIRECTORY_SEPARATOR . $tag . '.html';
+
+        $templateVariables['tag'] = $tag;
+        foreach($usage AS $type => $nodes)
+        {
+            $templateVariables[$type] = $nodes;
+        }
+
+        $rendered    = $this->twig->render('tag.html.twig', $templateVariables);
+        $filePointer = fopen($filename, 'w');
         fwrite($filePointer, $rendered);
     }
 
