@@ -22,7 +22,7 @@ featurebrowser:
 ## Usage
 Run the featurebrowser generator from the command line:
 ```
-php bin\featurebrowser generate
+php bin/featurebrowser generate
 ```
 
 ### Code Quality Scores
