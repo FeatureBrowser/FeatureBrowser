@@ -6,7 +6,7 @@ The Feature Browser tool generates .html files to represent your .feature files 
 ## Installation
 Install via composer/packagist:
 ```
-composer require "feature-browser/feature-browser": "1.0.0"
+composer require "feature-browser/feature-browser": "1.0.1"
 ```
 
 ## Configuration
