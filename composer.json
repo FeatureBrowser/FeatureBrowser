@@ -7,7 +7,6 @@
     "twig/twig": ">=1.5",
     "symfony/finder": "~2.6"
   },
-  "prefer-dist": true,
   "minimum-stability": "stable",
   "autoload": {
     "psr-4": {"FeatureBrowser\\": "src/"}
