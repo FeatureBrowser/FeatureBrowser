@@ -33,6 +33,11 @@ final class GenerateCommand extends BaseCommand
     protected $directories = [];
 
     /**
+     * @var Twig_Environment
+     */
+    private $twig;
+
+    /**
      * @inheritdoc
      */
     protected function configure()
@@ -44,6 +49,8 @@ final class GenerateCommand extends BaseCommand
 
     /**
      * @param InputInterface $input
+     *
+     * @throws \Exception
      */
     protected function loadConfig(InputInterface $input)
     {
@@ -113,8 +120,7 @@ final class GenerateCommand extends BaseCommand
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
+     * @inheritdoc
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -146,13 +152,18 @@ final class GenerateCommand extends BaseCommand
         $this->renderViews();
     }
 
-
+    /**
+     *
+     */
     protected function sortTags()
     {
         $this->tags = array_count_values($this->tags);
         arsort($this->tags);
     }
 
+    /**
+     *
+     */
     protected function sortDirectories()
     {
         ksort($this->directories);
@@ -160,7 +171,8 @@ final class GenerateCommand extends BaseCommand
 
     /**
      * @param FeatureNode $featureNode
-     * @param             $scenarios
+     * @param array       $scenarios
+     * @param string      $pathname
      */
     protected function extractTags(FeatureNode $featureNode, $scenarios, $pathname)
     {
@@ -198,7 +210,7 @@ final class GenerateCommand extends BaseCommand
     /**
      * @param SplFileInfo $featureFile
      *
-     * @return mixed|string
+     * @return string
      */
     protected function extractPathname(SplFileInfo $featureFile)
     {
@@ -215,7 +227,7 @@ final class GenerateCommand extends BaseCommand
     /**
      * @param FeatureNode $featureNode
      *
-     * @return mixed
+     * @return string
      */
     protected function extractFilename(FeatureNode $featureNode)
     {
@@ -279,7 +291,7 @@ final class GenerateCommand extends BaseCommand
     }
 
     /**
-     * @param $directory
+     * @param string $directory
      *
      * @return string
      */
@@ -294,7 +306,7 @@ final class GenerateCommand extends BaseCommand
     }
 
     /**
-     * @param $globalTemplateVariables
+     *
      */
     protected function renderBaseView()
     {
@@ -340,8 +352,10 @@ final class GenerateCommand extends BaseCommand
     }
 
     /**
-     * @param $directory
+     * @param string $directory
      * @param $features
+     * @param string $path
+     * @param array $directoryVariables
      */
     protected function renderDirectoryView($directory, $features, $path, $directoryVariables)
     {
