@@ -22,7 +22,7 @@ use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 
 final class GenerateCommand extends BaseCommand
 {
-    protected $configFile  = 'featurebrowser.yml.dist';
+    protected $configFile  = 'featurebrowser.yml';
     protected $projectName;
     protected $baseUrl;
     protected $outputDirectory;
@@ -48,7 +48,16 @@ final class GenerateCommand extends BaseCommand
     protected function loadConfig(InputInterface $input)
     {
         //Read the config file to get default parameters
-        $configs                 = Yaml::parse($this->configFile);
+        $configFile = $this->configFile;
+        if(!is_file($configFile))
+        {
+            $configFile = $this->configFile . '.dist';
+        }
+        if(!is_file($configFile))
+        {
+            throw new \Exception("Cannot locate `featurebrowser.yml` config file");
+        }
+        $configs                 = Yaml::parse($configFile);
         $this->projectName       = $configs['featurebrowser']['project-name'];
         $this->featuresDirectory = $configs['featurebrowser']['features-directory'];
         $this->baseUrl           = $configs['featurebrowser']['base-url'];
