@@ -261,7 +261,7 @@ final class GenerateCommand extends BaseCommand
         $viewsDirectory       = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'views';
         $macrosDirectory      = $viewsDirectory . DIRECTORY_SEPARATOR . 'macros';
         $templatesDirectories = [$viewsDirectory, $macrosDirectory];
-        $loader               = new Twig_Loader_Filesystem($templatesDirectories, ['cache' => '/cache']);
+        $loader               = new Twig_Loader_Filesystem($templatesDirectories);
         $this->twig           = new Twig_Environment($loader, ['debug' => true]);
         $this->twig->addExtension(new Twig_Extension_Debug());
         $this->twig->addGlobal('projectName', $this->projectName);
@@ -316,10 +316,7 @@ final class GenerateCommand extends BaseCommand
             'directories' => $this->directories
         ];
 
-        $rendered    = $this->twig->render('base.html.twig', $baseTemplateVariables);
-        $filePointer = fopen($this->outputDirectory . 'index.html', 'w');
-
-        fwrite($filePointer, $rendered);
+        $this->renderView('base.html.twig', $baseTemplateVariables, $this->outputDirectory . 'index.html');
     }
 
     /**
@@ -331,39 +328,45 @@ final class GenerateCommand extends BaseCommand
     {
         $featureVariables['feature'] = $featureNode;
 
-        $rendered    = $this->twig->render('feature.html.twig', $featureVariables);
-        $filePointer = fopen($path . DIRECTORY_SEPARATOR . $filename, 'w');
-        fwrite($filePointer, $rendered);
+        $this->renderView('feature.html.twig', $featureVariables, $path . DIRECTORY_SEPARATOR . $filename);
     }
 
     protected function renderTagView($tag, $usage, $path)
     {
         $filename = $path . DIRECTORY_SEPARATOR . $tag . '.html';
 
-        $templateVariables['tag'] = $tag;
+        $templateVariables = ['tag' => $tag];
         foreach($usage AS $type => $nodes)
         {
             $templateVariables[$type] = $nodes;
         }
 
-        $rendered    = $this->twig->render('tag.html.twig', $templateVariables);
-        $filePointer = fopen($filename, 'w');
-        fwrite($filePointer, $rendered);
+        $this->renderView('tag.html.twig', $templateVariables, $filename);
     }
 
     /**
      * @param string $directory
-     * @param $features
+     * @param        $features
      * @param string $path
-     * @param array $directoryVariables
+     * @param array  $directoryVariables
      */
     protected function renderDirectoryView($directory, $features, $path, $directoryVariables)
     {
         $directoryVariables['directory'] = $directory;
         $directoryVariables['features']  = $features;
 
-        $rendered    = $this->twig->render('directory.html.twig', $directoryVariables);
-        $filePointer = fopen($path . DIRECTORY_SEPARATOR . 'index.html', 'w');
+        $this->renderView('directory.html.twig', $directoryVariables, $path . DIRECTORY_SEPARATOR . 'index.html');
+    }
+
+    /**
+     * @param $tplFile
+     * @param $variables
+     * @param $filename
+     */
+    protected function renderView($tplFile, $variables, $filename)
+    {
+        $rendered    = $this->twig->render($tplFile, $variables);
+        $filePointer = fopen($filename, 'w');
         fwrite($filePointer, $rendered);
     }
 }
