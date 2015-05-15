@@ -12,7 +12,7 @@ final class Application extends BaseApplication
     /**
      * Gets the default commands that should always be available.
      *
-     * @return array An array of default Command instances
+     * @return Command[] An array of default Command instances
      */
     protected function getDefaultCommands()
     {
