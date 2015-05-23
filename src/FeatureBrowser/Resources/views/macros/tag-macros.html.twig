@@ -1,7 +1,17 @@
+{% macro tags(tags) %}
+    {% for tag in tags %}
+        {{ _self.tag(tag) }}
+    {% endfor %}
+{% endmacro %}
+
 {% macro tag(tag) %}
-    <a href="http://{{ baseUrl }}/{{ baseDirectory }}tags/{{ tag }}.html">@{{ tag }}</a>
+    <a href="http://{{ baseUrl }}/{{ baseDirectory }}tags/{{ tag }}.html" class="badge">
+        @{{ tag }}
+    </a>
 {% endmacro %}
 
 {% macro tagCount(tag, count) %}
-    <a href="http://{{ baseUrl }}/{{ baseDirectory }}tags/{{ tag }}.html">@{{ tag }} ({{ count }})</a>
+    <a href="http://{{ baseUrl }}/{{ baseDirectory }}tags/{{ tag }}.html">
+        @{{ tag }} ({{ count }})
+    </a>
 {% endmacro %}

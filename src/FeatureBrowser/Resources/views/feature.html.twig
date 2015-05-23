@@ -3,29 +3,50 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <p>
-        {% for tag in feature.getTags() %}
-            {{ tagmacros.tag(tag) }}
-        {% endfor %}
-    </p>
-    <h1>{{ feature.getTitle() }}</h1>
-    <p>{{ feature.getDescription()|nl2br }}</p>
-    {% for scenario in feature.getScenarios() %}
-        <span id="{{ scenario.getLine() }}"></span>
-        <hr/>
-        <p>
-            {% for tag in scenario.getTags() %}
-                {{ tagmacros.tag(tag) }}
-            {% endfor %}
+    <div class="page-header">
+        <p class="pull-right">
+            {{ tagmacros.tags(feature.tags) }}
         </p>
-        <h3>{{ scenario.getTitle() }}</h3>
-        {% if scenario.getNodeType() == 'Outline' %}
-            {% for example in scenario.getExamples() %}
-                <h4>Example #{{ loop.index }}</h4>
-                {{ macros.scenarionode(feature, example) }}
-            {% endfor %}
-        {% else %}
-            {{ macros.scenarionode(feature, scenario) }}
-        {% endif %}
-    {% endfor %}
+        <h1>{{ feature.title }}</h1>
+    </div>
+
+    <p>{{ feature.description|nl2br }}</p>
+
+    {% if feature.hasBackground %}
+        <h2>Background {{ feature.background.title }}</h2>
+        {{ macros.render_steps(feature.background.steps) }}
+    {% endif %}
+
+    <h2>Scenarios</h2>
+    <ul>
+        {% for scenario in feature.scenarios %}
+            <li>
+                <a href="#{{ scenario.line }}">
+                    {{ scenario.title }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <ul class="list-unstyled">
+        {% for scenario in feature.scenarios %}
+            <li id="{{ scenario.line }}">
+                <div class="page-header">
+                    <p class="pull-right">
+                        {{ tagmacros.tags(scenario.tags) }}
+                    </p>
+                    <h3>{{ scenario.title }}</h3>
+                </div>
+
+                {% if scenario.nodeType == 'Outline' %}
+                    {% for example in scenario.examples %}
+                        <h5>Example #{{ loop.index }}</h5>
+                        {{ macros.render_steps(example.steps) }}
+                    {% endfor %}
+                {% else %}
+                    {{ macros.render_steps(scenario.steps) }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

@@ -1,6 +1,6 @@
 {% macro tablenode(table) %}
-    <table class="table table-striped table-bordered">
-        {% for row in table.getRows() %}
+    <table class="table table-condensed">
+        {% for row in table.rows %}
         {% if loop.first %}
         <thead>
         <tr>
@@ -24,24 +24,25 @@
 
 {% macro stepnode(step) %}
     {% import _self as macros %}
-    {{ step.getKeyword() }} {{ step.getText() }}<br/>
-    {% if step.hasArguments() %}
-        {% for argument in step.getArguments() %}
-            {% if argument.getNodeType() == 'Table' %}
-                {{ macros.tablenode(argument) }}
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+    <dt>{{ step.keyword }}</dt>
+    <dd>
+        {{ step.text }}
+
+        {% if step.hasArguments %}
+            {% for argument in step.arguments %}
+                {% if argument.nodeType == 'Table' %}
+                    {{ macros.tablenode(argument) }}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </dd>
 {% endmacro %}
 
-{% macro scenarionode(feature, scenario) %}
+{% macro render_steps(steps) %}
     {% import _self as macros %}
-    <p>
-        {% for step in feature.getBackground().getSteps() %}
-            {{ step.getKeyword() }} {{ step.getText() }}<br/>
-        {% endfor %}
-        {% for step in scenario.getSteps() %}
-            {{ macros.stepnode(step) }}
-        {% endfor %}
-    </p>
+        <dl class="dl-horizontal">
+            {% for step in steps %}
+                {{ macros.stepnode(step) }}
+            {% endfor %}
+        </dl>
 {% endmacro %}

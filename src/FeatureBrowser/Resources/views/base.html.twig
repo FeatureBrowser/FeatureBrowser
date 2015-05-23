@@ -9,21 +9,19 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         <meta name="description" content="">
         <meta name="author" content="">
-        <link rel="icon" href="../../favicon.ico">
 
-        <title>{% block title %}{{ projectName }} User Manual{% endblock %}</title>
+        <title>{% block title %}{{ projectName ? projectName : 'User Manual' }}{% endblock %}</title>
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
         <!-- Bootstrap theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
         <style>
             body {
-                min-height: 2000px;
                 padding-top: 70px;
             }
-
             .table {
                 width: auto;
+                margin-bottom: 0;
             }
         </style>
     </head>
@@ -41,7 +39,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="http://{{ baseUrl }}/{{ baseDirectory }}">{{ block("title") }}</a>
+                <a class="navbar-brand" href="http://{{ baseUrl }}/{{ baseDirectory }}/index.html">
+                    {{ block("title") }}
+                </a>
             </div>
             <!--/.nav-collapse -->
         </div>
@@ -49,29 +49,30 @@
 {% endblock %}
 
 <div class="container">
-    <div class="starter-template">
-        {% block body %}
-            <div class="row">
-                <div class="col-md-6">
-                    <h2>Directories</h2>
-                    <ul>
-                        {% for directory, files in directories %}
-                            <li><a href="directories/{{ directory }}">{{ directory }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <h2>Tags</h2>
-                    <ul>
-                        {% for tag, count in tags %}
-                            <li>{{ tagmacros.tagCount(tag, count) }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+    {% block body %}
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Directories</h2>
+                <ul>
+                    {% for directory, files in directories %}
+                        <li>
+                            <a href="http://{{ baseUrl }}/{{ baseDirectory }}directories/{{ directory }}/index.html">
+                                {{ directory }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
-        {% endblock %}
-    </div>
-
+            <div class="col-md-6">
+                <h2>Tags</h2>
+                <ul>
+                    {% for tag, count in tags %}
+                        <li>{{ tagmacros.tagCount(tag, count) }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endblock %}
 </div>
 <!-- /.container -->
 
