@@ -4,7 +4,11 @@
     <h1>{{ directory }}</h1>
     <ul>
         {% for filename, feature in features %}
-            <li><a href="{{ filename }}">{{ feature.getTitle() }}</a></li>
+            <li>
+                <a href="http://{{ baseUrl }}/{{ baseDirectory }}directories/{{ directory }}/{{ filename }}">
+                    {{ feature.title }}
+                </a>
+            </li>
         {% endfor %}
     </ul>
 {% endblock %}

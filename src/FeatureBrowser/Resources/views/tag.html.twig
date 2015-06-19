@@ -9,7 +9,9 @@
                 <ul>
                     {% for filename, feature in features %}
                         <li>
-                            <a href="http://{{ baseUrl }}/{{ baseDirectory }}directories/{{ filename }}">{{ feature.getTitle() }}</a>
+                            <a href="http://{{ baseUrl }}/{{ baseDirectory }}directories/{{ filename }}">
+                                {{ feature.title }}
+                            </a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -19,11 +21,13 @@
             <div class="col-md-6">
                 <h2>Scenarios</h2>
                 {% for filename, scenariosInFile in scenarios %}
-                    <h5>{{ scenariosInFile.0.feature.getTitle() }}</h5>
+                    <h5>{{ scenariosInFile.0.feature.title }}</h5>
                     <ul>
                         {% for scenario in scenariosInFile %}
                             <li>
-                                <a href="http://{{ baseUrl }}/{{ baseDirectory }}directories/{{ filename }}#{{ scenario.scenario.getLine() }}">{{ scenario.scenario.getTitle() }}</a>
+                                <a href="http://{{ baseUrl }}/{{ baseDirectory }}directories/{{ filename }}#{{ scenario.scenario.line }}">
+                                    {{ scenario.scenario.title }}
+                                </a>
                             </li>
                         {% endfor %}
                     </ul>
