@@ -41,7 +41,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="http://{{ baseUrl }}/{{ baseDirectory }}">{{ block("title") }}</a>
+                <a class="navbar-brand" href="{{ tobase }}index.html">{{ block("title") }}</a>
             </div>
             <!--/.nav-collapse -->
         </div>
@@ -56,7 +56,7 @@
                     <h2>Directories</h2>
                     <ul>
                         {% for directory, files in directories %}
-                            <li><a href="directories/{{ directory }}">{{ directory }}</a></li>
+                            <li><a href="directories/{{ directory }}/index.html">{{ directory }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -64,7 +64,7 @@
                     <h2>Tags</h2>
                     <ul>
                         {% for tag, count in tags %}
-                            <li>{{ tagmacros.tagCount(tag, count) }}</li>
+                            <li>{{ tagmacros.tagCount('', tag, count) }}</li>
                         {% endfor %}
                     </ul>
                 </div>
