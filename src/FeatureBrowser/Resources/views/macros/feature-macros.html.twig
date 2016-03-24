@@ -1,3 +1,7 @@
+{% macro feature(relativePath, filename, anchor, title) %}
+    <a href="{{ relativePath }}directories/{{ filename }}{% if anchor %}#{{ anchor }}{% endif %}">{{ title }}</a>
+{% endmacro %}
+
 {% macro tablenode(table) %}
     <table class="table table-striped table-bordered">
         {% for row in table.getRows() %}

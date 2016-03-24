@@ -1,3 +1,5 @@
+{% set relativePath='../' %}
+{% import 'feature-macros.html.twig' as macros %}
 {% extends "base.html.twig" %}
 
 {% block body %}
@@ -9,7 +11,7 @@
                 <ul>
                     {% for filename, feature in features %}
                         <li>
-                            <a href="http://{{ baseUrl }}/{{ baseDirectory }}directories/{{ filename }}">{{ feature.getTitle() }}</a>
+                            {{ macros.feature(relativePath, filename, false, feature.getTitle()) }}
                         </li>
                     {% endfor %}
                 </ul>
@@ -23,7 +25,7 @@
                     <ul>
                         {% for scenario in scenariosInFile %}
                             <li>
-                                <a href="http://{{ baseUrl }}/{{ baseDirectory }}directories/{{ filename }}#{{ scenario.scenario.getLine() }}">{{ scenario.scenario.getTitle() }}</a>
+                                {{ macros.feature(relativePath, filename, scenario.scenario.getLine(), scenario.scenario.getTitle()) }}
                             </li>
                         {% endfor %}
                     </ul>
