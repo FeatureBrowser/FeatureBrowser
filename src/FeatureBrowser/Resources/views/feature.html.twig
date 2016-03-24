@@ -1,4 +1,4 @@
-{% set tobase='../../' %}
+{% set relativePath='../../' %}
 {% import 'feature-macros.html.twig' as macros %}
 {% import 'tag-macros.html.twig' as tagmacros %}
 {% extends "base.html.twig" %}
@@ -6,7 +6,7 @@
 {% block body %}
     <p>
         {% for tag in feature.getTags() %}
-            {{ tagmacros.tag(tobase, tag) }}
+            {{ tagmacros.tag(relativePath, tag) }}
         {% endfor %}
     </p>
     <h1>{{ feature.getTitle() }}</h1>
@@ -16,7 +16,7 @@
         <hr/>
         <p>
             {% for tag in scenario.getTags() %}
-                {{ tagmacros.tag(tobase, tag) }}
+                {{ tagmacros.tag(relativePath, tag) }}
             {% endfor %}
         </p>
         <h3>{{ scenario.getTitle() }}</h3>

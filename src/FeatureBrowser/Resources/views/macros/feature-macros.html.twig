@@ -1,5 +1,5 @@
-{% macro feature(tobase, filename, anchor, title) %}
-    <a href="{{ tobase }}directories/{{ filename }}{% if anchor %}#{{ anchor }}{% endif %}">{{ title }}</a>
+{% macro feature(relativePath, filename, anchor, title) %}
+    <a href="{{ relativePath }}directories/{{ filename }}{% if anchor %}#{{ anchor }}{% endif %}">{{ title }}</a>
 {% endmacro %}
 
 {% macro tablenode(table) %}

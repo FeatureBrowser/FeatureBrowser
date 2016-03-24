@@ -1,7 +1,7 @@
-{% macro tag(tobase, tag) %}
-    <a href="{{ tobase }}tags/{{ tag }}.html">@{{ tag }}</a>
+{% macro tag(relativePath, tag) %}
+    <a href="{{ relativePath }}tags/{{ tag }}.html">@{{ tag }}</a>
 {% endmacro %}
 
-{% macro tagCount(tobase, tag, count) %}
-    <a href="{{ tobase }}tags/{{ tag }}.html">@{{ tag }} ({{ count }})</a>
+{% macro tagCount(relativePath, tag, count) %}
+    <a href="{{ relativePath }}tags/{{ tag }}.html">@{{ tag }} ({{ count }})</a>
 {% endmacro %}

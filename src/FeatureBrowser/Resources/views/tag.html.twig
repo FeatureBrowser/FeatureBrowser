@@ -1,4 +1,4 @@
-{% set tobase='../' %}
+{% set relativePath='../' %}
 {% import 'feature-macros.html.twig' as macros %}
 {% extends "base.html.twig" %}
 
@@ -11,7 +11,7 @@
                 <ul>
                     {% for filename, feature in features %}
                         <li>
-                            {{ macros.feature(tobase, filename, false, feature.getTitle()) }}
+                            {{ macros.feature(relativePath, filename, false, feature.getTitle()) }}
                         </li>
                     {% endfor %}
                 </ul>
@@ -25,7 +25,7 @@
                     <ul>
                         {% for scenario in scenariosInFile %}
                             <li>
-                                {{ macros.feature(tobase, filename, scenario.scenario.getLine(), scenario.scenario.getTitle()) }}
+                                {{ macros.feature(relativePath, filename, scenario.scenario.getLine(), scenario.scenario.getTitle()) }}
                             </li>
                         {% endfor %}
                     </ul>
