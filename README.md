@@ -13,7 +13,7 @@ composer require "feature-browser/feature-browser": "~1.0"
 ```
 
 If you plan to use the tool only in your development environment and then deploy the generated documentation, rather than generating the files in your production environment, you can simply require dev only.
-```
+```sss
 composer require --dev "feature-browser/feature-browser": "~1.0"
 ```
 
